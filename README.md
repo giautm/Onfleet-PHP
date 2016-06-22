@@ -10,8 +10,7 @@
 <h2><a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>You can create an instance of the API wrapper:</p>
-<pre><code>$config = array("api_name" => "Replace with Name", "api_key" => "Replace with key");
-$onfleet = new Onfleet($config);</code></pre>
+<pre><code>$onfleet = new Onfleet("Replace with key", "Replace with Name");</code></pre>
 
 <p>Example to Create Administrator:</p>
 <pre><code>$params = array("name" => "Stuart Little", "email" => "your@email.com", "phone" => "6615991234");
