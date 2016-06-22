@@ -3,7 +3,7 @@
 /**
  * Onfleet API wrapper (CodeIgniter Library)
  *
- * Onfleet's application programming interface (API) provides the communication link
+ * Onfleet"s application programming interface (API) provides the communication link
  * between your application and Onfleet API.
  *
  * @author   Billy Bateman <billy@codekush.com>
@@ -12,12 +12,17 @@
  * @date     2015-07-07
  */
 class Onfleet {
+    const POST = 'post';
+    const GET = 'get';
+    const PUT = 'put';
+    const DELETE = 'delete';
+
     /**
      * Base settings
      */
-    private $_apiUrl = '';
-    private $_apiKey = '';
-    private $_apiName = '';
+    private $_apiUrl = "";
+    private $_apiKey = "";
+    private $_apiName = "";
 
     /**
      * initial api construct
@@ -30,7 +35,7 @@ class Onfleet {
     public function __construct($apiKey, $apiName, $apiUrl = null) {
         $this->_apiKey = $apiKey;
         $this->_apiName = $apiName;
-        $this->_apiUrl = rtrim($apiUrl ?: 'https://onfleet.com/api/v2', '/') . '/';
+        $this->_apiUrl = rtrim($apiUrl ?: "https://onfleet.com/api/v2", "/") . "/";
     }
 
     /**
@@ -39,7 +44,7 @@ class Onfleet {
      * @return object
      */
     public function organizations() {
-        return $this->request('get', 'organization');
+        return $this->call("organization");
     }
 
     /**
@@ -48,9 +53,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function organization_details($params = []) {
-        $id = $params['id'];
-        return $this->request('get', 'organizations/' . $id);
+    public function organizationDetails($params = []) {
+        return $this->call("organizations/{$params['id']}");
     }
 
     /**
@@ -59,7 +63,7 @@ class Onfleet {
      * @return object
      */
     public function admins() {
-        return $this->request('get', 'admins');
+        return $this->call("admins");
     }
 
     /**
@@ -68,9 +72,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function admin_details($params = []) {
-        $id = $params['id'];
-        return $this->request('get', 'admins/' . $id);
+    public function adminDetails($params = []) {
+        return $this->call("admins/{$params['id']}");
     }
 
     /**
@@ -79,19 +82,19 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function admin_create($params = []) {
-        return $this->request('post', 'admins', $params);
+    public function adminCreate($params = []) {
+        return $this->call("admins", self::POST, $params);
     }
 
     /**
      * Update admin
      *
      * @param array $params
-     * @param $id
      * @return object
+     * @internal param $id
      */
-    public function admin_update($params = [], $id) {
-        return $this->request('put', 'admins/' . $id, $params);
+    public function adminUpdate($params = []) {
+        return $this->call("admins/{$params['id']}", self::PUT, $params);
     }
 
     /**
@@ -100,10 +103,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function admin_delete($params = []) {
-        $id = $params['id'];
-
-        return $this->request('delete', 'admins/' . $id);
+    public function adminDelete($params = []) {
+        return $this->call("admins/{$params['id']}", self::DELETE);
     }
 
     /**
@@ -113,7 +114,7 @@ class Onfleet {
      * @return object
      */
     public function workers($params = []) {
-        return $this->request('get', 'workers', $params);
+        return $this->call("workers", $params);
     }
 
     /**
@@ -122,9 +123,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function worker_details($params = []) {
-        $id = $params['id'];
-        return $this->request('get', 'workers/' . $id . "?analytics=true", $params);
+    public function workerDetails($params = []) {
+        return $this->call("workers/{$params['id']}?analytics=true", $params);
     }
 
     /**
@@ -133,8 +133,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function worker_create($params = []) {
-        return $this->request('post', 'workers', $params);
+    public function workerCreate($params = []) {
+        return $this->call("workers", self::POST, $params);
     }
 
     /**
@@ -143,9 +143,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function worker_update($params = []) {
-        $id = $params['id'];
-        return $this->request('put', 'workers/' . $id, $params);
+    public function workerUpdate($params = []) {
+        return $this->call("workers/{$params['id']}", self::PUT, $params);
     }
 
     /**
@@ -154,9 +153,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function worker_delete($params = []) {
-        $id = $params['id'];
-        return $this->request('delete', 'workers/' . $id);
+    public function workerDelete($params = []) {
+        return $this->call("workers/{$params['id']}", self::DELETE);
     }
 
     /**
@@ -165,7 +163,7 @@ class Onfleet {
      * @return object
      */
     public function teams() {
-        return $this->request('get', 'teams');
+        return $this->call("teams");
     }
 
     /**
@@ -174,9 +172,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function team_details($params = []) {
-        $id = $params['id'];
-        return $this->request('get', 'teams/' . $id);
+    public function teamDetails($params = []) {
+        return $this->call("teams/{$params['id']}");
     }
 
 
@@ -186,10 +183,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function destination_details($params = []) {
-        $id = $params['id'];
-
-        return $this->request('get', 'destinations/' . $id);
+    public function destinationDetails($params = []) {
+        return $this->call("destinations/{$params['id']}");
     }
 
     /**
@@ -198,42 +193,41 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function destination_create($params = []) {
-        return $this->request('post', 'destinations', $params);
+    public function destinationCreate($params = []) {
+        return $this->call("destinations", self::POST, $params);
     }
 
     /**
      * Recipient Search By Name
      *
-     * @param array $params
+     * @param $name
      * @return object
+     * @internal param array $params
      */
-    public function recipient_search_name($params = []) {
-        $name = $params['name'];
-
-        return $this->request('get', 'recipients/name/' . $name);
+    public function recipientSearchName($name) {
+        return $this->call("recipients/name/{$name}");
     }
 
     /**
      * Recipient Search By Phone
      *
-     * @param array $params
+     * @param $phone
      * @return object
+     * @internal param array $params
      */
-    public function recipient_search_phone($params = []) {
-        $phone = $params['phone'];
-        return $this->request('get', 'recipients/phone/' . $phone);
+    public function recipientSearchPhone($phone) {
+        return $this->call("recipients/phone/{$phone}");
     }
 
     /**
      * Recipient details
-     *
-     * @param array $params
+     * @param $params
      * @return object
+     * @internal param $id
+     * @internal param array $params
      */
-    public function recipient_details($params = []) {
-        $id = $params['id'];
-        return $this->request('get', 'recipients/' . $id);
+    public function recipientDetails($params) {
+        return $this->call("recipients/{$params['id']}");
     }
 
     /**
@@ -242,8 +236,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function recipient_create($params = []) {
-        return $this->request('post', 'recipients', $params);
+    public function recipientCreate($params = []) {
+        return $this->call("recipients", self::POST, $params);
     }
 
     /**
@@ -252,20 +246,19 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function recipient_update($params = []) {
-        $id = $params['id'];
-        return $this->request('put', 'recipients/' . $id, $params);
+    public function recipientUpdate($params = []) {
+        return $this->call("recipients/{$params['id']}", self::PUT, $params);
     }
 
     /**
      * List tasks
      *
      * @param array $params
-     * $params['state'] integer (0 = Unnasigned, 1 = Assigned, 2 = Active, 3 = Completed)
+     * $params["state"] integer (0 = Unnasigned, 1 = Assigned, 2 = Active, 3 = Completed)
      * @return object
      */
     public function tasks($params = []) {
-        return $this->request('get', 'tasks', $params);
+        return $this->call("tasks", $params);
     }
 
     /**
@@ -274,10 +267,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function task_details($params = []) {
-        $id = $params['id'];
-
-        return $this->request('get', 'tasks/' . $id);
+    public function taskDetails($params) {
+        return $this->call("tasks/{$params['id']}");
     }
 
     /**
@@ -286,8 +277,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function task_create($params = []) {
-        return $this->request('post', 'tasks', $params);
+    public function taskCreate($params) {
+        return $this->call("tasks", self::POST, $params);
     }
 
     /**
@@ -296,10 +287,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function task_update($params = []) {
-        $id = $params['id'];
-
-        return $this->request('put', 'tasks/' . $id, $params);
+    public function taskUpdate($params) {
+        return $this->call("tasks/{$params['id']}", self::PUT, $params);
     }
 
     /**
@@ -308,9 +297,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function task_delete($params = []) {
-        $id = $params['id'];
-        return $this->request('delete', 'tasks/' . $id);
+    public function taskDelete($params) {
+        return $this->call("tasks/{$params['id']}", self::DELETE);
     }
 
     /**
@@ -319,21 +307,21 @@ class Onfleet {
      * @return object
      */
     public function webhooks() {
-        return $this->request('get', 'webhooks');
+        return $this->call("webhooks");
     }
 
     /**
      * Create webhook
      *
      * $params array
-     * $params[url'] string
-     * $params['trigger'] integer
+     * $params[url"] string
+     * $params["trigger"] integer
      *
      * @param array $params
      * @return object
      */
-    public function webhook_create($params = []) {
-        return $this->request('post', 'webhooks', $params);
+    public function webhookCreate($params = []) {
+        return $this->call("webhooks", self::POST, $params);
     }
 
     /**
@@ -342,9 +330,8 @@ class Onfleet {
      * @param array $params
      * @return object
      */
-    public function webhook_delete($params = []) {
-        $id = $params['id'];
-        return $this->request('delete', 'webhooks/' . $id);
+    public function webhookDelete($params = []) {
+        return $this->call("webhooks/{$params['id']}", self::DELETE);
     }
 
     /**
@@ -355,19 +342,19 @@ class Onfleet {
      * @param array $params
      * @return mixed
      */
-    protected function request($method, $url, $params = []) {
+    protected function call($url, $method = "get", $params = []) {
         $paramsJson = json_encode($params);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->_apiUrl . $url);
-        if ($method == 'post') {
+        if ($method == self::POST) {
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsJson);
-        } else if ($method == 'put') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+        } else if ($method == self::PUT) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, self::PUT);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsJson);
-        } else if ($method == "delete") {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        } else if ($method == self::DELETE) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, self::DELETE);
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
