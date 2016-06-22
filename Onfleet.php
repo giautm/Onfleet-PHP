@@ -342,7 +342,7 @@ class Onfleet {
      * @param array $params
      * @return mixed
      */
-    protected function call($url, $method = "get", $params = []) {
+    protected function call($url, $method = self::GET, $params = []) {
         $paramsJson = json_encode($params);
 
         $ch = curl_init();
