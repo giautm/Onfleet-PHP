@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Onfleet API wrapper (CodeIgniter Library)
  *
  * Onfleet's application programming interface (API) provides the communication link
@@ -11,439 +11,372 @@
  * @link     https://github.com/billybateman/Onfleet-PHP
  * @date     2015-07-07
  */
-
 class Onfleet {
-
-    /*
-     * API URL
-     */
-    const http_api_url = 'https://onfleet.com/api/v2/';	
-   
     /**
      * Base settings
-     */   
-	private $_api_key = '';
-	private $_api_name = '';
-    protected $params = array();
-    protected $url;
-    
+     */
+    private $_apiUrl = '';
+    private $_apiKey = '';
+    private $_apiName = '';
+
     /**
      * initial api construct
-     * return null
+     *
+     * @param $apiKey
+     * @param $apiName
+     * @param $apiUrl
+     * @internal param array $config
      */
-    public function __construct($config = array())
-    {
-        $this->_api_key = $config->item("api_key");
-        $this->_api_name = $config->item("api_name");
-    }    
-		
+    public function __construct($apiKey, $apiName, $apiUrl = null) {
+        $this->_apiKey = $apiKey;
+        $this->_apiName = $apiName;
+        $this->_apiUrl = rtrim($apiUrl ?: 'https://onfleet.com/api/v2', '/') . '/';
+    }
+
     /**
      * List organizations
      *
      * @return object
-    */
-    public function organizations()
-    {
-        return $this->request('get', self::http_api_url.'organization', $this->_api_key);
+     */
+    public function organizations() {
+        return $this->request('get', 'organization');
     }
-	
-	/**
+
+    /**
      * Organizations details
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function organization_details($params = array())
-    {
+     */
+    public function organization_details($params = []) {
         $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'organizations/'.$id, $this->_api_key);
-    }	
-			
-	/**
+        return $this->request('get', 'organizations/' . $id);
+    }
+
+    /**
      * List administrators
      *
      * @return object
-    */
-    public function admins()
-    {
-        return $this->request('get', self::http_api_url.'admins', $this->_api_key);
+     */
+    public function admins() {
+        return $this->request('get', 'admins');
     }
-	
-	/**
+
+    /**
      * Admin Details
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function admin_details($params = array())
-    {
+     */
+    public function admin_details($params = []) {
         $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'admins/'.$id, $this->_api_key);
+        return $this->request('get', 'admins/' . $id);
     }
-	
-	/**
+
+    /**
      * Create admin
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function admin_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'admins', $this->_api_key, $params);
+     */
+    public function admin_create($params = []) {
+        return $this->request('post', 'admins', $params);
     }
-	
-	/**
+
+    /**
      * Update admin
      *
-	 * $params array
-	 *
+     * @param array $params
+     * @param $id
      * @return object
-    */
-    public function admin_update($params = array(), $id)
-    {		
-		return $this->request('put', self::http_api_url.'admins/'.$id, $this->_api_key, $params);
+     */
+    public function admin_update($params = [], $id) {
+        return $this->request('put', 'admins/' . $id, $params);
     }
 
-	/**
+    /**
      * Delete admin
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function admin_delete($params = array())
-    {
+     */
+    public function admin_delete($params = []) {
         $id = $params['id'];
-		
-		return $this->request('delete', self::http_api_url.'admins/'.$id, $this->_api_key);
+
+        return $this->request('delete', 'admins/' . $id);
     }
 
-	/**
+    /**
      * List workers
      *
+     * @param array $params
      * @return object
-    */
-    public function workers($params = array())
-    {
-        return $this->request('get', self::http_api_url.'workers', $this->_api_key, $params);
-    }
-	
-	/**
-     * Worker Details
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function worker_details($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'workers/'.$id."?analytics=true", $this->_api_key, $params);
-    }
-	
-	/**
-     * Create worker
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function worker_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'workers', $this->_api_key, $params);
-    }
-	
-	/**
-     * Update worker
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function worker_update($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('put', self::http_api_url.'workers/'.$id, $this->_api_key, $params);
+     */
+    public function workers($params = []) {
+        return $this->request('get', 'workers', $params);
     }
 
-	/**
+    /**
+     * Worker Details
+     *
+     * @param array $params
+     * @return object
+     */
+    public function worker_details($params = []) {
+        $id = $params['id'];
+        return $this->request('get', 'workers/' . $id . "?analytics=true", $params);
+    }
+
+    /**
+     * Create worker
+     *
+     * @param array $params
+     * @return object
+     */
+    public function worker_create($params = []) {
+        return $this->request('post', 'workers', $params);
+    }
+
+    /**
+     * Update worker
+     *
+     * @param array $params
+     * @return object
+     */
+    public function worker_update($params = []) {
+        $id = $params['id'];
+        return $this->request('put', 'workers/' . $id, $params);
+    }
+
+    /**
      * Delete worker
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function worker_delete($params = array())
-    {
+     */
+    public function worker_delete($params = []) {
         $id = $params['id'];
-		
-		return $this->request('delete', self::http_api_url.'workers/'.$id, $this->_api_key);
+        return $this->request('delete', 'workers/' . $id);
     }
-	
-	/**
+
+    /**
      * List teams
      *
      * @return object
-    */
-    public function teams()
-    {
-        return $this->request('get', self::http_api_url.'teams', $this->_api_key);
-    }
-	
-	/**
-     * Team Details
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function team_details($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'teams/'.$id, $this->_api_key);
-    }	
-	
-	
-	/**
-     * Destination Details
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function destination_details($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'destinations/'.$id, $this->_api_key);
-    }
-	
-	/**
-     * Create destination
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function destination_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'destinations', $this->_api_key, $params);
-    }	
-	
-	/**
-     * Recipient Search By Name
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function recipient_search_name($params = array())
-    {
-        $name = $params['name'];
-		
-		return $this->request('get', self::http_api_url.'recipients/name/'.$name, $this->_api_key);
-    }
-	
-	/**
-     * Recipient Search By Phone
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function recipient_search_phone($params = array())
-    {
-        $phone = $params['phone'];
-		
-		return $this->request('get', self::http_api_url.'recipients/phone/'.$phone, $this->_api_key);
-    }
-	
-	/**
-     * Recipient details
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function recipient_details($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'recipients/'.$id, $this->_api_key);
-    }
-	
-	/**
-     * Create recipient
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function recipient_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'recipients', $this->_api_key, $params);
-    }
-	
-	/**
-     * Update recipient
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function recipient_update($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('put', self::http_api_url.'recipients/'.$id, $this->_api_key, $params);
-    }
-	
-	/**
-     * List tasks
-     *
-	 * $params array
-     * $params['state'] integer (0 = Unnasigned 1 = Assigned 2 = Active 3 = Completed)
-     *
-	 *
-     * @return object
-    */
-    public function tasks($params = array())
-    {
-        return $this->request('get', self::http_api_url.'tasks', $this->_api_key, $params);
-    }
-	
-	/**
-     * Task details
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function task_details($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('get', self::http_api_url.'tasks/'.$id, $this->_api_key);
-    }
-	
-	/**
-     * Create task
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function task_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'tasks', $this->_api_key, $params);
-    }
-	
-	/**
-     * Update task
-     *
-	 * $params array
-	 *
-     * @return object
-    */
-    public function task_update($params = array())
-    {
-        $id = $params['id'];
-		
-		return $this->request('put', self::http_api_url.'tasks/'.$id, $this->_api_key, $params);
+     */
+    public function teams() {
+        return $this->request('get', 'teams');
     }
 
-	/**
+    /**
+     * Team Details
+     *
+     * @param array $params
+     * @return object
+     */
+    public function team_details($params = []) {
+        $id = $params['id'];
+        return $this->request('get', 'teams/' . $id);
+    }
+
+
+    /**
+     * Destination Details
+     *
+     * @param array $params
+     * @return object
+     */
+    public function destination_details($params = []) {
+        $id = $params['id'];
+
+        return $this->request('get', 'destinations/' . $id);
+    }
+
+    /**
+     * Create destination
+     *
+     * @param array $params
+     * @return object
+     */
+    public function destination_create($params = []) {
+        return $this->request('post', 'destinations', $params);
+    }
+
+    /**
+     * Recipient Search By Name
+     *
+     * @param array $params
+     * @return object
+     */
+    public function recipient_search_name($params = []) {
+        $name = $params['name'];
+
+        return $this->request('get', 'recipients/name/' . $name);
+    }
+
+    /**
+     * Recipient Search By Phone
+     *
+     * @param array $params
+     * @return object
+     */
+    public function recipient_search_phone($params = []) {
+        $phone = $params['phone'];
+        return $this->request('get', 'recipients/phone/' . $phone);
+    }
+
+    /**
+     * Recipient details
+     *
+     * @param array $params
+     * @return object
+     */
+    public function recipient_details($params = []) {
+        $id = $params['id'];
+        return $this->request('get', 'recipients/' . $id);
+    }
+
+    /**
+     * Create recipient
+     *
+     * @param array $params
+     * @return object
+     */
+    public function recipient_create($params = []) {
+        return $this->request('post', 'recipients', $params);
+    }
+
+    /**
+     * Update recipient
+     *
+     * @param array $params
+     * @return object
+     */
+    public function recipient_update($params = []) {
+        $id = $params['id'];
+        return $this->request('put', 'recipients/' . $id, $params);
+    }
+
+    /**
+     * List tasks
+     *
+     * @param array $params
+     * $params['state'] integer (0 = Unnasigned, 1 = Assigned, 2 = Active, 3 = Completed)
+     * @return object
+     */
+    public function tasks($params = []) {
+        return $this->request('get', 'tasks', $params);
+    }
+
+    /**
+     * Task details
+     *
+     * @param array $params
+     * @return object
+     */
+    public function task_details($params = []) {
+        $id = $params['id'];
+
+        return $this->request('get', 'tasks/' . $id);
+    }
+
+    /**
+     * Create task
+     *
+     * @param array $params
+     * @return object
+     */
+    public function task_create($params = []) {
+        return $this->request('post', 'tasks', $params);
+    }
+
+    /**
+     * Update task
+     *
+     * @param array $params
+     * @return object
+     */
+    public function task_update($params = []) {
+        $id = $params['id'];
+
+        return $this->request('put', 'tasks/' . $id, $params);
+    }
+
+    /**
      * Delete task
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function task_delete($params = array())
-    {
+     */
+    public function task_delete($params = []) {
         $id = $params['id'];
-		
-		return $this->request('delete', self::http_api_url.'tasks/'.$id, $this->_api_key);
+        return $this->request('delete', 'tasks/' . $id);
     }
-	
-	/**
+
+    /**
      * List webhooks
      *
      * @return object
-    */
-    public function webhooks()
-    {
-        return $this->request('get', self::http_api_url.'webhooks', $this->_api_key);
-    }
-	
-	/**
-     * Create webhook
-     *
-	 * $params array
-	 * $params[url'] string
-	 * $params['trigger'] integer
-	 *
-     * @return object
-    */
-    public function webhook_create($params = array())
-    {
-        return $this->request('post', self::http_api_url.'webhooks', $this->_api_key, $params);
+     */
+    public function webhooks() {
+        return $this->request('get', 'webhooks');
     }
 
-	/**
+    /**
+     * Create webhook
+     *
+     * $params array
+     * $params[url'] string
+     * $params['trigger'] integer
+     *
+     * @param array $params
+     * @return object
+     */
+    public function webhook_create($params = []) {
+        return $this->request('post', 'webhooks', $params);
+    }
+
+    /**
      * Delete webhook
      *
-	 * $params array
-	 *
+     * @param array $params
      * @return object
-    */
-    public function webhook_delete($params = array())
-    {
+     */
+    public function webhook_delete($params = []) {
         $id = $params['id'];
-		
-		return $this->request('delete', self::http_api_url.'webhooks/'.$id, $this->_api_key);
+        return $this->request('delete', 'webhooks/' . $id);
     }
 
     /**
      * request data
      * Connect to API URL
-     *
-     * @param array
-     * return string
+     * @param $method
+     * @param $url
+     * @param array $params
+     * @return mixed
      */
-    protected function request($method, $url, $api_key, $params = array())
-    {
-        $params = json_encode($params); 
-		//print_r($params);
-		
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		if($method == 'post'){
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-		}
-		if($method == 'put'){
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-		}
-		if($method == "delete"){
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-		}
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, "$api_key:");
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		$output = curl_exec($ch);
-		$info = curl_getinfo($ch);
-		curl_close($ch);
+    protected function request($method, $url, $params = []) {
+        $paramsJson = json_encode($params);
 
-		return $output;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->_apiUrl . $url);
+        if ($method == 'post') {
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsJson);
+        } else if ($method == 'put') {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $paramsJson);
+        } else if ($method == "delete") {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        }
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, "{$this->_apiKey}:");
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        $output = curl_exec($ch);
+        curl_getinfo($ch);
+        curl_close($ch);
+
+        return $output;
     }
 }
